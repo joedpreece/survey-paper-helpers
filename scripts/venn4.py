@@ -1,4 +1,4 @@
-#%%
+# %%
 import re
 
 from venny4py.venny4py import *
@@ -9,16 +9,21 @@ df = load_key_words()
 
 df_venn = df.reset_index()
 
+
 def helper(
-        terms: list[str],
+    terms: list[str],
 ) -> set:
     pattern = r"|".join(map(re.escape, terms))
     mask = (
-        df_venn['Index Keywords'].fillna('').str.contains(pattern, case=False, regex=True)
-        | df_venn['Author Keywords'].fillna('').str.contains(pattern, case=False, regex=True)
+        df_venn["Index Keywords"]
+        .fillna("")
+        .str.contains(pattern, case=False, regex=True)
+        | df_venn["Author Keywords"]
+        .fillna("")
+        .str.contains(pattern, case=False, regex=True)
         # df_venn['Abstract'].fillna('').str.contains(pattern, case=False, regex=True)
     )
-    return set(df_venn.loc[mask, 'EID'])
+    return set(df_venn.loc[mask, "EID"])
 
 
 set1 = helper(
@@ -29,17 +34,12 @@ set1 = helper(
     ]
 )
 
-set2 = helper(
-    terms=[
-        "transport"
-    ]
-)
+set2 = helper(terms=["transport"])
 
 set3 = helper(
     terms=[
         "decarbonis",
         # "sustain",
-
     ]
 )
 
