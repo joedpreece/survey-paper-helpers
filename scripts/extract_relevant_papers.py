@@ -4,6 +4,7 @@ keyword matching, and computes a relevance score for each paper based on its mem
 the categories. The results are saved as a CSV file for further use.
 """
 
+#%%
 from survey_paper_helpers.utils import (
     get_papers_from_keywords,
     load_data,
@@ -45,6 +46,14 @@ df["semantic:linked_data"] = df.index.isin(set_linked_data)
 
 # Save the results to a CSV file.
 df.to_csv("./../artifacts/CategorisedPapers.csv")
+
+df = df.sort_values(by="Year", ascending=True)
+
+df1 = df[df["transportation"] & df["semantic_web"] & ~df["decarbonisation"]]
+df2 = df[df["transportation"] & ~df["semantic_web"] & df["decarbonisation"]]
+df3 = df[~df["transportation"] & df["semantic_web"] & df["decarbonisation"]]
+
+df4 = df[df["transportation"] & df["semantic_web"] & df["decarbonisation"]]
 
 # df_ontology = df[df.index.isin(set_ontology & set_transport & set_decarbonisation)]
 #
