@@ -49,9 +49,18 @@ df.to_csv("./../artifacts/CategorisedPapers.csv")
 
 df = df.sort_values(by="Year", ascending=True)
 
+df_decarb = df[~df["transportation"] & ~df["semantic_web"] & df["decarbonisation"]]
+df_transport = df[df["transportation"] & ~df["semantic_web"] & ~df["decarbonisation"]]
+df_sw = df[~df["transportation"] & df["semantic_web"] & ~df["decarbonisation"]]
+
 df1 = df[df["transportation"] & df["semantic_web"] & ~df["decarbonisation"]]
 df2 = df[df["transportation"] & ~df["semantic_web"] & df["decarbonisation"]]
 df3 = df[~df["transportation"] & df["semantic_web"] & df["decarbonisation"]]
+
+df_ontology_transport = df[df["semantic:ontology"] & df["transportation"] & ~df["decarbonisation"]]
+df_sw_transport = df[df["semantic:semantic_web"] & df["transportation"] & ~df["decarbonisation"]]
+df_kg_transport = df[df["semantic:knowledge_graph"] & df["transportation"] & ~df["decarbonisation"]]
+df_ld_transport = df[df["semantic:linked_data"] & df["transportation"] & ~df["decarbonisation"]]
 
 df4 = df[df["transportation"] & df["semantic_web"] & df["decarbonisation"]]
 
