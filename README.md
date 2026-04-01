@@ -24,4 +24,4 @@ The scripts use the source code to produce artifacts, and are located in the [`s
 ## Artifacts
 
 - [`CategorisedPapers.csv`](artifacts/CategorisedPapers.csv) - A table of all 222 studies, with boolean columns stating if they have been categorised as one of the pillars.
-- [`Papers.csv`](artifacts/Keywords.csv) - A table of all keywords, and the frequency they appear at.
+- [`Keywords.csv`](artifacts/Keywords.csv) - A table of all keywords, and the frequency they appear at.
