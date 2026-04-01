@@ -1,3 +1,7 @@
+"""
+This script generates a word cloud of the index keywords.
+"""
+
 # %% Word Frequencies
 from matplotlib import pyplot as plt
 
@@ -18,5 +22,5 @@ plt.figure(figsize=(10, 5))
 plt.imshow(wordcloud, interpolation="bilinear")
 plt.axis("off")
 
-plt.show()
-# plt.savefig("./../artifacts/wordcloud.pdf")
+# plt.show()
+plt.savefig("./../artifacts/wordcloud.pdf")

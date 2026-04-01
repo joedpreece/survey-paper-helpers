@@ -1,5 +1,5 @@
 """
-This script loads the dataset, identifies relevant papers for each predefined category using
+This script identifies relevant studies for each predefined category using
 keyword matching, and computes a relevance score for each paper based on its membership across
 the categories. The results are saved as a CSV file for further use.
 """

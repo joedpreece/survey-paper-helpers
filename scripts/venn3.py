@@ -1,3 +1,7 @@
+"""
+This script generates the venn diagram for the different categories of the survey.
+"""
+
 from matplotlib import pyplot as plt
 from matplotlib_venn import venn3
 
