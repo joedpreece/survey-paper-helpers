@@ -6,7 +6,6 @@ the categories. The results are saved as a CSV file for further use.
 
 #%%
 from survey_paper_helpers.utils import (
-    get_papers_from_keywords,
     load_data,
     TRANSPORTATION_TERMS,
     DECARBONISATION_TERMS,
@@ -14,26 +13,25 @@ from survey_paper_helpers.utils import (
     SEMANTIC_WEB_TERMS,
     KNOWLEDGE_GRAPH_TERMS,
     LINKED_DATA_TERMS,
-    COMBINED_SEMANTIC_TERMS,
+    COMBINED_SEMANTIC_TERMS, get_eids,
 )
 
 # Load the data.
 df = load_data()
 
-# Get the EIDs of the papers that contain the keywords.
-set_transport = set(get_papers_from_keywords(TRANSPORTATION_TERMS).index)
-set_decarbonisation = set(get_papers_from_keywords(DECARBONISATION_TERMS).index)
-set_combined_semantic = set(get_papers_from_keywords(COMBINED_SEMANTIC_TERMS).index)
+set_eids_decarbonisation = get_eids(DECARBONISATION_TERMS)
+set_eids_transportation = get_eids(TRANSPORTATION_TERMS)
+set_eids_combined_semantic = get_eids(COMBINED_SEMANTIC_TERMS)
 
-set_ontology = set(get_papers_from_keywords(ONTOLOGY_TERMS).index)
-set_semantic_web = set(get_papers_from_keywords(SEMANTIC_WEB_TERMS).index)
-set_knowledge_graph = set(get_papers_from_keywords(KNOWLEDGE_GRAPH_TERMS).index)
-set_linked_data = set(get_papers_from_keywords(LINKED_DATA_TERMS).index)
+set_ontology = get_eids(ONTOLOGY_TERMS)
+set_semantic_web = get_eids(SEMANTIC_WEB_TERMS)
+set_knowledge_graph = get_eids(KNOWLEDGE_GRAPH_TERMS)
+set_linked_data = get_eids(LINKED_DATA_TERMS)
 
 # Create a new column to say if the category is relevant for each paper.
-df["transportation"] = df.index.isin(set_transport)
-df["decarbonisation"] = df.index.isin(set_decarbonisation)
-df["semantic_web"] = df.index.isin(set_combined_semantic)
+df["transportation"] = df.index.isin(set_eids_transportation)
+df["decarbonisation"] = df.index.isin(set_eids_decarbonisation)
+df["semantic_web"] = df.index.isin(set_eids_combined_semantic)
 
 # Calculate the sum of the relevance scores for each paper.
 df["relevance"] = df["transportation"].astype(int) + df["decarbonisation"].astype(int) + df["semantic_web"].astype(int)
@@ -49,29 +47,19 @@ df.to_csv("./../artifacts/CategorisedPapers.csv")
 
 df = df.sort_values(by="Year", ascending=True)
 
-df_decarb = df[~df["transportation"] & ~df["semantic_web"] & df["decarbonisation"]]
-df_transport = df[df["transportation"] & ~df["semantic_web"] & ~df["decarbonisation"]]
-df_sw = df[~df["transportation"] & df["semantic_web"] & ~df["decarbonisation"]]
+df_none = df[~df["transportation"] & ~df["semantic_web"] & ~df["decarbonisation"]]
 
-df1 = df[df["transportation"] & df["semantic_web"] & ~df["decarbonisation"]]
-df2 = df[df["transportation"] & ~df["semantic_web"] & df["decarbonisation"]]
-df3 = df[~df["transportation"] & df["semantic_web"] & df["decarbonisation"]]
+df_d = df[~df["transportation"] & ~df["semantic_web"] & df["decarbonisation"]]
+df_t = df[df["transportation"] & ~df["semantic_web"] & ~df["decarbonisation"]]
+df_s = df[~df["transportation"] & df["semantic_web"] & ~df["decarbonisation"]]
 
-df_ontology_transport = df[df["semantic:ontology"] & df["transportation"] & ~df["decarbonisation"]]
-df_sw_transport = df[df["semantic:semantic_web"] & df["transportation"] & ~df["decarbonisation"]]
-df_kg_transport = df[df["semantic:knowledge_graph"] & df["transportation"] & ~df["decarbonisation"]]
-df_ld_transport = df[df["semantic:linked_data"] & df["transportation"] & ~df["decarbonisation"]]
+df_st = df[df["transportation"] & df["semantic_web"] & ~df["decarbonisation"]]
+df_dt = df[df["transportation"] & ~df["semantic_web"] & df["decarbonisation"]]
+df_ds = df[~df["transportation"] & df["semantic_web"] & df["decarbonisation"]]
 
-df4 = df[df["transportation"] & df["semantic_web"] & df["decarbonisation"]]
+df_st_ontology = df[df["semantic:ontology"] & df["transportation"] & ~df["decarbonisation"]]
+df_st_semantic_web = df[df["semantic:semantic_web"] & df["transportation"] & ~df["decarbonisation"]]
+df_st_knowledge_graph = df[df["semantic:knowledge_graph"] & df["transportation"] & ~df["decarbonisation"]]
+df_st_linked_data = df[df["semantic:linked_data"] & df["transportation"] & ~df["decarbonisation"]]
 
-# df_ontology = df[df.index.isin(set_ontology & set_transport & set_decarbonisation)]
-#
-# df_semantic_web = df[
-#     df.index.isin(set_semantic_web & set_transport & set_decarbonisation)
-# ]
-# df_knowledge_graph = df[
-#     df.index.isin(set_knowledge_graph & set_transport & set_decarbonisation)
-# ]
-# df_linked_data = df[
-#     df.index.isin(set_linked_data & set_transport & set_decarbonisation)
-# ]
+df_dst = df[df["transportation"] & df["semantic_web"] & df["decarbonisation"]]

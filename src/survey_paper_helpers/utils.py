@@ -1,3 +1,5 @@
+import re
+
 import pandas as pd
 import importlib.resources as resources
 
@@ -330,7 +332,7 @@ def load_index_key_words() -> pd.DataFrame:
     return df[["Index Keywords"]]
 
 
-def get_papers_from_keywords(keywords: list[str]) -> pd.DataFrame:
+def get_eids_from_keywords(keywords: list[str]) -> set:
 
     df = load_index_key_words()
 
@@ -338,4 +340,24 @@ def get_papers_from_keywords(keywords: list[str]) -> pd.DataFrame:
 
     df = df[~df.index.duplicated(keep="first")]
 
-    return df
+    return set(df.index)
+
+def get_eids_from_abstract(keywords: list[str]) -> set:
+    pattern = r"|".join(map(re.escape, keywords))
+
+    df = load_data()
+
+    df = df[df["Index Keywords"].isna()]
+
+    mask = (
+        df["Abstract"]
+        .fillna("")
+        .str.contains(pattern, case=False, regex=True)
+    )
+    return set(df.loc[mask].index)
+
+def get_eids(keywords: list[str]) -> set:
+    return (
+        get_eids_from_keywords(keywords)
+        | get_eids_from_abstract(keywords)
+    )

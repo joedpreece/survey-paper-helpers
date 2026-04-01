@@ -2,25 +2,18 @@ from matplotlib import pyplot as plt
 from matplotlib_venn import venn3
 
 from survey_paper_helpers.utils import (
-    get_papers_from_keywords,
     COMBINED_SEMANTIC_TERMS,
     TRANSPORTATION_TERMS,
-    DECARBONISATION_TERMS, load_data,
+    DECARBONISATION_TERMS, load_data, get_eids,
 )
 
 # Get the EIDs of the papers that contain all the keywords for the different categories.
-set1 = set(get_papers_from_keywords(COMBINED_SEMANTIC_TERMS).index)
-set2 = set(get_papers_from_keywords(TRANSPORTATION_TERMS).index)
-set3 = set(get_papers_from_keywords(DECARBONISATION_TERMS).index)
+set1 = get_eids(COMBINED_SEMANTIC_TERMS)
+set2 = get_eids(TRANSPORTATION_TERMS)
+set3 = get_eids(DECARBONISATION_TERMS)
 
 set_all = set(load_data().index)
 outside = set_all - (set1 | set2 | set3)
-
-# df_subset = df[df.index.isin(set1 | set2 | set3)]
-#
-# df_123 = df[df.index.isin(set1 & set2 & set3)]
-
-# Plot the Venn diagram.
 
 plt.rcParams.update({
     'font.size': 5,
