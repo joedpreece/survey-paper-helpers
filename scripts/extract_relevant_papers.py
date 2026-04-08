@@ -13,7 +13,7 @@ from survey_paper_helpers.utils import (
     SEMANTIC_WEB_TERMS,
     KNOWLEDGE_GRAPH_TERMS,
     LINKED_DATA_TERMS,
-    COMBINED_SEMANTIC_TERMS, get_eids,
+    COMBINED_SEMANTIC_TERMS, get_eids, create_citation_command,
 )
 
 # Load the data.
@@ -63,3 +63,22 @@ df_st_knowledge_graph = df[df["semantic:knowledge_graph"] & df["transportation"]
 df_st_linked_data = df[df["semantic:linked_data"] & df["transportation"] & ~df["decarbonisation"]]
 
 df_dst = df[df["transportation"] & df["semantic_web"] & df["decarbonisation"]]
+
+# %% Create the citation commands
+
+command_none = create_citation_command(df_none)
+
+command_d = create_citation_command(df_d)
+command_t = create_citation_command(df_t)
+command_s = create_citation_command(df_s)
+
+command_st = create_citation_command(df_st)
+command_dt = create_citation_command(df_dt)
+command_ds = create_citation_command(df_ds)
+
+command_st_ontology = create_citation_command(df_st_ontology)
+command_st_semantic_web = create_citation_command(df_st_semantic_web)
+command_st_knowledge_graph = create_citation_command(df_st_knowledge_graph)
+command_st_linked_data = create_citation_command(df_st_linked_data)
+
+command_dst = create_citation_command(df_dst)

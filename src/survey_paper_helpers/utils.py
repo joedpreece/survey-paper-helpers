@@ -2,6 +2,8 @@ import re
 
 import pandas as pd
 import importlib.resources as resources
+import bibtexparser
+from bibtexparser.bibdatabase import BibDatabase
 
 DECARBONISATION_TERMS = [
     # "Carbon",
@@ -234,7 +236,8 @@ TRANSPORTATION_TERMS = [
     "Production and transportations",
     "Air transport",
     "Employee mobility",
-    "Mobility budget"
+    "Mobility budget",
+    "Green logistics",
 ]
 
 ONTOLOGY_TERMS = [
@@ -277,6 +280,22 @@ COMBINED_SEMANTIC_TERMS = (
     ONTOLOGY_TERMS + SEMANTIC_WEB_TERMS + KNOWLEDGE_GRAPH_TERMS + LINKED_DATA_TERMS
 )
 
+def load_bibtex() -> BibDatabase:
+
+    with (
+        resources.files("survey_paper_helpers.data")
+        .joinpath(
+            "references.bib"
+        )
+        .open("r") as f
+    ):
+        bib_db = bibtexparser.load(f)
+
+    return bib_db
+
+    # Each entry includes an "ID" field = the reference key
+    bib_entries = bib_db.entries
+
 
 def load_data() -> pd.DataFrame:
     """
@@ -303,6 +322,46 @@ def load_data() -> pd.DataFrame:
 
     # Set the index to the EID.
     df = df.set_index("EID")
+
+    # Load the bibtex database and extract the titles and DOIs.
+    bib_db = load_bibtex()
+
+    bib_lookup = {}
+    for entry in bib_db.entries:
+        key = entry["ID"]
+
+        if "doi" in entry:
+            bib_lookup[entry["doi"].lower()] = key
+        elif "title" in entry:
+            bib_lookup[entry["title"].lower()] = key
+
+    # Add a new column to the DataFrame with the bibtex key.
+    def lookup_bibkey(row):
+        if pd.notna(row["DOI"]):
+            key = bib_lookup.get(row["DOI"].lower())
+            if key:
+                return key
+
+        title = row["Title"].lower()
+        return bib_lookup.get(title)
+
+    df["bibtex_key"] = df.apply(lookup_bibkey, axis=1)
+
+    # Deal with some of the edge cases!
+    df.loc[
+        "2-s2.0-84858691157", "bibtex_key"] = "pillmannMetamodellingEuropeanEnvironmental2010"
+    df.loc["2-s2.0-85029034008", "bibtex_key"] = "burghardtDevelopingOntologyK122010a"
+    df.loc[
+        "2-s2.0-84905721438", "bibtex_key"] = "koblerDesigningInterpersonalPersuasion2013a"
+    df.loc["2-s2.0-84891273882", "bibtex_key"] = "kelpinUsingDublinCore2013a"
+    df.loc["2-s2.0-84926314925", "bibtex_key"] = "consoliEmergencyVehicleRouting2014a"
+    df.loc[
+        "2-s2.0-84912567480", "bibtex_key"] = "houOntologybasedSemanticModelling2014a"
+    df.loc[
+        "2-s2.0-84975740642", "bibtex_key"] = "khalilModelResearchEntrepreneurial2015a"
+    df.loc["2-s2.0-105018631710", "bibtex_key"] = "tomassiHealthcareSupplyChain2025a"
+    df.loc[
+        "2-s2.0-105016776176", "bibtex_key"] = "treviranusFacialEmotionalFeedback2025a"
 
     # Convert the keyword columns into lists.
     df["Index Keywords"] = df["Index Keywords"].str.split("; ")
@@ -361,3 +420,12 @@ def get_eids(keywords: list[str]) -> set:
         get_eids_from_keywords(keywords)
         | get_eids_from_abstract(keywords)
     )
+
+
+def create_citation_command(df: pd.DataFrame) -> str:
+    keys = (
+        df["bibtex_key"].fillna("empty").astype(str)
+    )
+
+    return r"\cite{" + ",".join(keys) + "}"
+

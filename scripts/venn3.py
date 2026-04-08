@@ -44,5 +44,5 @@ venn3([set1, set2, set3], ("Semantic Web", "Transportation", "Decarbonisation"))
 plt.text(0.1, -0.55, f"{len(outside)}", fontsize=5)
 
 plt.tight_layout()
-plt.savefig("./../artifacts/venn3.pdf", dpi=300, transparent=True)
-# plt.show()
+# plt.savefig("./../artifacts/venn3.pdf", dpi=300, transparent=True)
+plt.show()
