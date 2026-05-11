@@ -1,25 +1,64 @@
 # Survey Paper
-
-Python code to aid the survey paper. In particular, it produces the figures for the methodology.
+This repository provides the Python code for the methodology of the survey paper.
 
 ## Installation
 1. Clone the repository. 
 2. Set up a local Python `venv`. (For instructions on how to do this, please refer to [this tutorial](https://realpython.com/python-virtual-environments-a-primer/).) 
-3. Run the following to install the dependencies:
-```bash
-pip install -e .
-```
+3. Run the following to install the source code and dependencies:
+    ```bash
+    pip install -e .
+    ```
 
 ## Source Code
-The source code is located in the [`src/survey_paper_helpers/`](src/survey_paper_helpers) folder. This is where the exported Scopus data is stored, and all functionality. Visit [`utils.py`](src/survey_paper_helpers/utils.py) to see the keywords selected for each pillar.
+The source code is located in the [`src/survey_paper_helpers/`](src/survey_paper_helpers) folder. This is where the exported Scopus data is stored, and all functionality is coded. Visit [`utils.py`](src/survey_paper_helpers/utils.py) to see the keywords selected for each pillar.
+
+## Scopus Data
+We used the following search string to identify relevant papers on [Scopus](https://www.scopus.com/pages/home#basic):
+```
+TITLE-ABS-KEY ( 
+        ( 
+            ontolog* 
+        OR  "knowledge graph" 
+        OR  semantic* 
+    ) 
+    AND ( transport* ) 
+    AND ( 
+            decarbonis* 
+        OR  sustain* 
+        OR  "net zero" 
+        OR  carbon 
+    ) 
+    AND NOT gene* 
+) 
+AND PUBYEAR > 2007 
+AND PUBYEAR < 2026 
+AND ( 
+        LIMIT-TO ( DOCTYPE , "ar" ) 
+    OR  LIMIT-TO ( DOCTYPE , "cp" ) 
+    OR  LIMIT-TO ( DOCTYPE , "ch" ) 
+    OR  LIMIT-TO ( DOCTYPE , "re" ) 
+) 
+AND ( 
+        LIMIT-TO ( LANGUAGE , "English" )
+)
+```
+We extracted the [results](src/survey_paper_helpers/data/scopus_export_Mar%2026-2026_2af2e3af-4c3f-46f6-91d5-44e7ce63ed11.csv) on `2026-03-26`, using the following steps:
+1. Run the search query
+2. Export the results as a CSV file.
+   1. Select the `Export` button.
+   2. Under `File types`, select `CSV`..
+   3. Select `Documents 1 –` and put in 222.
+   4. Ensure all options under `Citation information` are selected.
+   5. Ensure all options under `Abstract & keywords` are selected.
+   6. Select `Export` and save the file.
 
 ## Scripts
 The scripts use the source code to produce artifacts, and are located in the [`scripts/`](scripts) folder. You can run these separately. Feel free to add and tinker.
 
 - [`extract_keywords.py`](scripts/extract_keywords.py) - Extracts all the Scopus index keywords from the studies.
 - [`extract_relevant_papers.py`](scripts/extract_relevant_papers.py) - Extracts relevant papers based on the keywords.
-- [`venn3.py`](scripts/venn3.py) - Produces the Venn diagram.
-- [`word_cloud.py`](scripts/word_cloud.py) - Produces the word cloud.
+- [`produce_venn3.py`](scripts/produce_venn3.py) - Produces the Venn diagram.
+- [`produce_wordcloud.py`](scripts/produce_wordcloud.py) - Produces the word cloud.
 
 ## Artifacts
 

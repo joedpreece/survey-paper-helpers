@@ -8,13 +8,13 @@ from matplotlib_venn import venn3
 from survey_paper_helpers.utils import (
     COMBINED_SEMANTIC_TERMS,
     TRANSPORTATION_TERMS,
-    DECARBONISATION_TERMS, load_data, get_eids,
+    DECARBONISATION_TERMS, load_data, get_eids_with_keywords,
 )
 
 # Get the EIDs of the papers that contain all the keywords for the different categories.
-set1 = get_eids(COMBINED_SEMANTIC_TERMS)
-set2 = get_eids(TRANSPORTATION_TERMS)
-set3 = get_eids(DECARBONISATION_TERMS)
+set1 = get_eids_with_keywords(COMBINED_SEMANTIC_TERMS)
+set2 = get_eids_with_keywords(TRANSPORTATION_TERMS)
+set3 = get_eids_with_keywords(DECARBONISATION_TERMS)
 
 set_all = set(load_data().index)
 outside = set_all - (set1 | set2 | set3)
@@ -44,5 +44,5 @@ venn3([set1, set2, set3], ("Semantic Web", "Transportation", "Decarbonisation"))
 plt.text(0.1, -0.55, f"{len(outside)}", fontsize=5)
 
 plt.tight_layout()
-# plt.savefig("./../artifacts/venn3.pdf", dpi=300, transparent=True)
-plt.show()
+plt.savefig("./../artifacts/Venn3.pdf", dpi=300, transparent=True)
+# plt.show()

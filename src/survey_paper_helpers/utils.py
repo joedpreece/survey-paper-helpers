@@ -280,7 +280,11 @@ COMBINED_SEMANTIC_TERMS = (
     ONTOLOGY_TERMS + SEMANTIC_WEB_TERMS + KNOWLEDGE_GRAPH_TERMS + LINKED_DATA_TERMS
 )
 
-def load_bibtex() -> BibDatabase:
+def __load_bibtex() -> BibDatabase:
+    """
+    Loads the bibtex bibliography file.
+    :return: A bibtex database containing the bibliography entries.
+    """
 
     with (
         resources.files("survey_paper_helpers.data")
@@ -293,18 +297,10 @@ def load_bibtex() -> BibDatabase:
 
     return bib_db
 
-    # Each entry includes an "ID" field = the reference key
-    bib_entries = bib_db.entries
-
 
 def load_data() -> pd.DataFrame:
     """
-    Loads survey data from a predefined CSV file, processes it to set the index to EID, and
-    converts keyword columns into lists for further analysis.
-
-    The function reads a CSV file packaged within the module and processes the data by joining
-    it with the index EID column. Both the 'Index Keywords' and 'Author Keywords' columns are
-    transformed from strings into lists based on a separator.
+    Loads the extracted Scopus CSV file and performs some basic preprocessing.
 
     :return: A pandas DataFrame containing the processed survey data.
     :rtype: pandas.DataFrame
@@ -324,7 +320,7 @@ def load_data() -> pd.DataFrame:
     df = df.set_index("EID")
 
     # Load the bibtex database and extract the titles and DOIs.
-    bib_db = load_bibtex()
+    bib_db = __load_bibtex()
 
     bib_lookup = {}
     for entry in bib_db.entries:
@@ -370,7 +366,7 @@ def load_data() -> pd.DataFrame:
     return df
 
 
-def load_key_words() -> pd.DataFrame:
+def load_keywords() -> pd.DataFrame:
 
     df = load_data()
 
@@ -380,7 +376,12 @@ def load_key_words() -> pd.DataFrame:
     return df[["Author Keywords", "Index Keywords"]]
 
 
-def load_index_key_words() -> pd.DataFrame:
+def load_scopus_indexed_keywords() -> pd.DataFrame:
+    """
+    Loads the Scopus indexed keywords from the CSV file.
+
+    :return: A pandas DataFrame containing all the Scopus indexed keywords for each study.
+    """
 
     # Load the dataset.
     df = load_data()
@@ -388,12 +389,12 @@ def load_index_key_words() -> pd.DataFrame:
     # Explode the keyword columns into separate rows.
     df = df.explode(column=["Index Keywords"])
 
-    return df[["Index Keywords"]]
+    return df.loc[:, ["Index Keywords"]].copy()
 
 
-def get_eids_from_keywords(keywords: list[str]) -> set:
+def __get_eids_from_keywords(keywords: list[str]) -> set:
 
-    df = load_index_key_words()
+    df = load_scopus_indexed_keywords()
 
     df = df[df["Index Keywords"].isin(keywords)]
 
@@ -401,7 +402,7 @@ def get_eids_from_keywords(keywords: list[str]) -> set:
 
     return set(df.index)
 
-def get_eids_from_abstract(keywords: list[str]) -> set:
+def __get_eids_from_abstract(keywords: list[str]) -> set:
     pattern = r"|".join(map(re.escape, keywords))
 
     df = load_data()
@@ -415,14 +416,28 @@ def get_eids_from_abstract(keywords: list[str]) -> set:
     )
     return set(df.loc[mask].index)
 
-def get_eids(keywords: list[str]) -> set:
+def get_eids_with_keywords(keywords: list[str]) -> set:
+    """
+    Returns a set of the EIDs of the papers that match with the provided keywords.
+
+    :param keywords: The keywords to check against.
+    :return: A set of EIDs that match against the keywords.
+    """
+
     return (
-        get_eids_from_keywords(keywords)
-        | get_eids_from_abstract(keywords)
+            __get_eids_from_keywords(keywords)
+            | __get_eids_from_abstract(keywords)
     )
 
 
-def create_citation_command(df: pd.DataFrame) -> str:
+def create_latex_citation_command(df: pd.DataFrame) -> str:
+    """
+    Creates a LaTeX citation command for all studies within the provided dataframe.
+
+    :param df: The dataframe containing the studies.
+    :return: A LaTeX citation command for all studies.
+    """
+
     keys = (
         df["bibtex_key"].fillna("empty").astype(str)
     )
