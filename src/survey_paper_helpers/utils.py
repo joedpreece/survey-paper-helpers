@@ -444,3 +444,47 @@ def create_latex_citation_command(df: pd.DataFrame) -> str:
 
     return r"\cite{" + ",".join(keys) + "}"
 
+
+def load_studies_against_definitions_df() -> pd.DataFrame:
+
+    with (
+        resources.files("survey_paper_helpers.data")
+        .joinpath(
+            "crosscheck.csv"
+        )
+        .open("r") as f
+    ):
+        df = pd.read_csv(f)
+
+    df = df.iloc[0:, 4:]
+
+    df.columns = [
+        "Study",
+        "OWL Ontology",
+        "RDF Knowledge Graph",
+        # "Taxonomy",
+        "Ontology",
+        "Knowledge Graph",
+        # "Linked Data",
+        "Artefact"
+    ]
+
+    df["Study"] = df["Study"].str.replace(r"\\textcite{", "", regex=True)
+    df["Study"] = df["Study"].str.replace(r"\\mbox{", "", regex=True)
+    df["Study"] = df["Study"].str.replace(r"\\sout{", "", regex=True)
+    df["Study"] = df["Study"].str.replace(r"}", "", regex=True)
+
+    df = df.drop_duplicates(subset="Study")
+
+    cols = list(df.columns)[1:]
+
+    df[cols] = (
+        df[cols]
+        .replace(r'\\checkmark', 1, regex=True)
+        .fillna(0)
+        .astype(int)
+    )
+
+    df["W3C"] = df["OWL Ontology"] | df["RDF Knowledge Graph"]
+
+    return df

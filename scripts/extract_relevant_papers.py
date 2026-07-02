@@ -2,6 +2,7 @@
 This script identifies relevant studies for each pillar using keyword matching.
 The results are saved as a CSV file for further use.
 """
+import pandas as pd
 
 #%%
 from survey_paper_helpers.utils import (
@@ -56,8 +57,8 @@ df_st = df[df["transportation"] & df["semantic_web"] & ~df["decarbonisation"]]
 df_dt = df[df["transportation"] & ~df["semantic_web"] & df["decarbonisation"]]
 df_ds = df[~df["transportation"] & df["semantic_web"] & df["decarbonisation"]]
 
-df_st_ontology = df[df["semantic:ontology"] & df["transportation"] & ~df["decarbonisation"]]
 df_st_semantic_web = df[df["semantic:semantic_web"] & df["transportation"] & ~df["decarbonisation"]]
+df_st_ontology = df[df["semantic:ontology"] & df["transportation"] & ~df["decarbonisation"]]
 df_st_knowledge_graph = df[df["semantic:knowledge_graph"] & df["transportation"] & ~df["decarbonisation"]]
 df_st_linked_data = df[df["semantic:linked_data"] & df["transportation"] & ~df["decarbonisation"]]
 
@@ -80,3 +81,14 @@ command_st_knowledge_graph = create_latex_citation_command(df_st_knowledge_graph
 command_st_linked_data = create_latex_citation_command(df_st_linked_data)
 
 command_dst = create_latex_citation_command(df_dst)
+
+# %% For looking at studies that exist within more than one of the subsets
+crossover = []
+crossover.append(pd.merge(df_st_semantic_web[["bibtex_key"]], df_st_ontology[["bibtex_key"]]))
+crossover.append(pd.merge(df_st_semantic_web[["bibtex_key"]], df_st_knowledge_graph[["bibtex_key"]]))
+crossover.append(pd.merge(df_st_semantic_web[["bibtex_key"]], df_st_linked_data[["bibtex_key"]]))
+
+crossover.append(pd.merge(df_st_ontology[["bibtex_key"]], df_st_knowledge_graph[["bibtex_key"]]))
+crossover.append(pd.merge(df_st_ontology[["bibtex_key"]], df_st_linked_data[["bibtex_key"]]))
+
+crossover.append(pd.merge(df_st_knowledge_graph[["bibtex_key"]], df_st_linked_data[["bibtex_key"]]))

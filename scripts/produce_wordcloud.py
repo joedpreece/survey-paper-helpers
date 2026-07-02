@@ -26,7 +26,7 @@ freqs = Counter(df["Index Keywords"])
 text = " ".join(df["Index Keywords"])
 
 dpi = 300
-width_mm = 183
+width_mm = 89
 width_inches = width_mm / 25.4
 width_pixels = int(width_inches * dpi)
 
@@ -35,7 +35,7 @@ wordcloud = WordCloud(
     height=int(width_pixels / 2),
     background_color=None,
     mode="RGBA",
-    min_font_size=5,
+    min_font_size=7,
     margin=0,
     collocations=False,
 ).generate_from_frequencies(freqs)
