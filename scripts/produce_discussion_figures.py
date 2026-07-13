@@ -6,7 +6,6 @@ from survey_paper_helpers.utils import load_studies_against_definitions_df
 
 df = load_studies_against_definitions_df()
 
-#%% Remove the out of scope papers
 out_of_scope = [
     "bouchereauSemanticAnnotationResources2017a",
     "masekResearchPassengersDemand2018a",
@@ -16,9 +15,9 @@ out_of_scope = [
     "kimbrellElectricCarsharingSustainable2021a",
     "denissenRequirementsCorrosionInhibitor2022",
     "parkChangingIslandSociety2022a",
-    "benesKnowledgeGraphsTransport2023a",
-    "palSupplyChainInformation2023",
-    "asgariOntologyResilienceSustainability2025a",
+    # "benesKnowledgeGraphsTransport2023a",
+    # "palSupplyChainInformation2023",
+    # "asgariOntologyResilienceSustainability2025a",
     # "liuBridgingDataSilos2025a",
     "tomassiHealthcareSupplyChain2025a",
     "juEmbodiedEnergyEmergy2011",
@@ -32,63 +31,60 @@ df_w3c = df[df["W3C"] == 1]
 df_not_w3c = df[df["W3C"] == 0]
 
 plt.rcParams.update({"font.size": 7})
-
-# %% Produce the artefact plot
-v = df["Artefact"].value_counts()
-
-v = v.rename(
-    {0: "Artefact Unavailable", 1: "Artefact Available"}
-)
-
 width_mm = 89
 height_mm = 89
 width_inches = width_mm / 25.4
 height_inches = height_mm / 25.4
 
-fig, ax = plt.subplots(
-    figsize=(width_inches, width_inches * (2/3)),
-    dpi=300,
-)
-
-v.plot.pie(autopct="%1.0f%%", startangle=90, ax=ax)
-ax.set_ylabel("")
-plt.tight_layout()
-plt.savefig("./../artifacts/Figure_Artefact_Status.pdf", dpi=300, transparent=True)
-
-# %%
-v = df["W3C"].value_counts(normalize=True).mul(100).round(0)
+# %% Plot the W3C vs non W3C plot
+v = df["W3C"].value_counts()
 
 v = v.rename(
     {0: "Non W3C", 1: "W3C"}
 )
 
-width_mm = 89
-height_mm = 89
-width_inches = width_mm / 25.4
-height_inches = height_mm / 25.4
+fig, ax = plt.subplots(
+    figsize=(width_inches, width_inches * (2/3)),
+    dpi=300,
+)
+
+v.plot.pie(
+    autopct=lambda pct: f'{int(round(pct * v.sum() / 100))}',
+    # autopct="%1.0f%%",
+    startangle=90,
+    ax=ax)
+ax.set_ylabel("")
+plt.tight_layout()
+plt.savefig("./../artifacts/Figure_W3C_Status.pdf", dpi=300, transparent=True)
+
+# %% Produce the artefact plot
+v = df_w3c["Artefact"].value_counts()
+
+v = v.rename(
+    {0: "Artefact Unavailable", 1: "Artefact Available"}
+)
 
 fig, ax = plt.subplots(
     figsize=(width_inches, width_inches * (2/3)),
     dpi=300,
 )
 
-v.plot.pie(autopct="%1.0f%%", startangle=90, ax=ax)
+v.plot.pie(
+    autopct=lambda pct: f'{int(round(pct * v.sum() / 100))}',
+    startangle=90,
+    ax=ax
+)
 ax.set_ylabel("")
 plt.tight_layout()
-plt.savefig("./../artifacts/Figure_W3C_Status.pdf", dpi=300, transparent=True)
+plt.savefig("./../artifacts/Figure_Artefact_Status.pdf", dpi=300, transparent=True)
 
 # %%
-width_mm = 89
-height_mm = 89
-width_inches = width_mm / 25.4
-height_inches = height_mm / 25.4
-
 fig, ax = plt.subplots(
     figsize=(width_inches, width_inches),
     dpi=300,
 )
 
-cols = ["OWL Ontology", "RDF Knowledge Graph", "Linked Data"]
+cols = ["OWL Ontology", "RDF Knowledge Graph"]
 # "Ontology", "Knowledge Graph", "Taxonomy"
 
 plot_df = (
@@ -126,7 +122,7 @@ fig, ax = plt.subplots(
 )
 
 # cols = ["OWL Ontology", "RDF Knowledge Graph", "Linked Data"]
-cols = ["Ontology", "Knowledge Graph", "Taxonomy"]
+cols = ["Ontology", "Knowledge Graph"]
 
 plot_df = (
     pd.concat(
@@ -152,17 +148,11 @@ plt.show()
 
 
 # %%
-df_w3c["RDF Knowledge Graph"].value_counts(normalize=True).mul(100).round(0)
+df_w3c["OWL Ontology"].value_counts()
+df_w3c["RDF Knowledge Graph"].value_counts()
 
 # %%
-df_w3c["Linked Data"].value_counts(normalize=True).mul(100).round(0)
+df_w3c["Artefact"].value_counts(normalize=True)
 
 # %%
-df_not_w3c["Taxonomy"].value_counts(normalize=True).mul(100).round(0)
-
-# %%
-df_not_w3c["Ontology"].value_counts(normalize=True).mul(100).round(0)
-
-# %%
-df_not_w3c["Knowledge Graph"].value_counts(normalize=True).mul(100).round(0)
-
+df["W3C"].value_counts(normalize=True)

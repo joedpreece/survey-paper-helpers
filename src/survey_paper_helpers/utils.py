@@ -460,11 +460,11 @@ def load_studies_against_definitions_df() -> pd.DataFrame:
 
     df.columns = [
         "Study",
+        "Ontology",
+        "Knowledge Graph",
         "OWL Ontology",
         "RDF Knowledge Graph",
         # "Taxonomy",
-        "Ontology",
-        "Knowledge Graph",
         # "Linked Data",
         "Artefact"
     ]
