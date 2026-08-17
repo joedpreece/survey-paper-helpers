@@ -4,11 +4,13 @@ from matplotlib import pyplot as plt
 
 from survey_paper_helpers.utils import load_studies_against_definitions_df
 
+#%% Load the crosschecked studies.
 df = load_studies_against_definitions_df()
 
+# Remove the out of scope studies.
 out_of_scope = [
     "bouchereauSemanticAnnotationResources2017a",
-    "masekResearchPassengersDemand2018a",
+    # "masekResearchPassengersDemand2018a",
     "gaudet-blavignacNationalSemanticdrivenThreepillar2021a",
     "zhangUseComparativeQuantitative2017a",
     "shellerTheorizingMobilityJustice2018a",
@@ -27,132 +29,193 @@ out_of_scope = [
 
 df = df[~df["Study"].isin(out_of_scope)]
 
+#
 df_w3c = df[df["W3C"] == 1]
 df_not_w3c = df[df["W3C"] == 0]
 
+# Set up the figure parameters.
 plt.rcParams.update({"font.size": 7})
 width_mm = 89
 height_mm = 89
 width_inches = width_mm / 25.4
 height_inches = height_mm / 25.4
 
-# %% Plot the W3C vs non W3C plot
-v = df["W3C"].value_counts()
+#%% Testing the figure
+w3c_count = len(df_w3c)
+non_w3c_count = len(df_not_w3c)
 
-v = v.rename(
-    {0: "Non W3C", 1: "W3C"}
-)
-
-fig, ax = plt.subplots(
-    figsize=(width_inches, width_inches * (2/3)),
-    dpi=300,
-)
-
-v.plot.pie(
-    autopct=lambda pct: f'{int(round(pct * v.sum() / 100))}',
-    # autopct="%1.0f%%",
-    startangle=90,
-    ax=ax)
-ax.set_ylabel("")
-plt.tight_layout()
-plt.savefig("./../artifacts/Figure_W3C_Status.pdf", dpi=300, transparent=True)
-
-# %% Produce the artefact plot
-v = df_w3c["Artefact"].value_counts()
-
-v = v.rename(
-    {0: "Artefact Unavailable", 1: "Artefact Available"}
-)
-
-fig, ax = plt.subplots(
-    figsize=(width_inches, width_inches * (2/3)),
-    dpi=300,
-)
-
-v.plot.pie(
-    autopct=lambda pct: f'{int(round(pct * v.sum() / 100))}',
-    startangle=90,
-    ax=ax
-)
-ax.set_ylabel("")
-plt.tight_layout()
-plt.savefig("./../artifacts/Figure_Artefact_Status.pdf", dpi=300, transparent=True)
-
-# %%
-fig, ax = plt.subplots(
-    figsize=(width_inches, width_inches),
-    dpi=300,
-)
-
-cols = ["OWL Ontology", "RDF Knowledge Graph"]
-# "Ontology", "Knowledge Graph", "Taxonomy"
-
-plot_df = (
-    pd.concat(
-        {
-            col: df_w3c[col].value_counts()
-            for col in cols
-        },
-        axis=1
-    )
-    .T
-)
-
-plot_df.plot(
-    kind="bar",
-    ax=ax,
-)
-
-ax.set_ylabel("Number of Studies")
-ax.set_xlabel("")
-plt.legend(title="Response")
-plt.tight_layout()
-plt.show()
-
-# %%
-
-width_mm = 89
-height_mm = 89
-width_inches = width_mm / 25.4
-height_inches = height_mm / 25.4
+artefact_available = df_w3c["Artefact"].value_counts().get(1, 0)
+artefact_unavailable = df_w3c["Artefact"].value_counts().get(0, 0)
 
 fig, ax = plt.subplots(
     figsize=(width_inches, width_inches),
     dpi=300,
 )
 
-# cols = ["OWL Ontology", "RDF Knowledge Graph", "Linked Data"]
-cols = ["Ontology", "Knowledge Graph"]
-
-plot_df = (
-    pd.concat(
-        {
-            col: df_not_w3c[col].value_counts()
-            for col in cols
-        },
-        axis=1
-    )
-    .T
+# Outer ring
+ax.pie(
+    [non_w3c_count, w3c_count],
+    radius=1.0,
+    labels=[
+        f"Non-W3C\n(n={non_w3c_count})",
+        f"W3C\n(n={w3c_count})",
+    ],
+    colors=["#d9d9d9", "#4e79a7"],
+    startangle=90,
+    wedgeprops=dict(width=0.3, edgecolor="white"),
 )
 
-plot_df.plot(
-    kind="bar",
-    ax=ax,
+# Inner ring
+ax.pie(
+    [
+        non_w3c_count,          # hidden
+        artefact_available,
+        artefact_unavailable,
+    ],
+    radius=0.7,
+    labels=[
+        "",
+        f"Artefact\n(n={artefact_available})",
+        f"No Artefact\n(n={artefact_unavailable})",
+    ],
+    colors=[
+        "white",      # hidden sector
+        "#59a14f",
+        "#e15759",
+    ],
+    # labeldistance=1,
+    startangle=90,
+    wedgeprops=dict(width=0.3, edgecolor="white"),
 )
 
-ax.set_ylabel("Number of Studies")
-ax.set_xlabel("")
-plt.legend(title="Response")
+ax.set(aspect="equal")
+
 plt.tight_layout()
-plt.show()
+plt.savefig("./../artifacts/Figure_W3C_Summary.pdf", dpi=300, transparent=True)
 
 
-# %%
-df_w3c["OWL Ontology"].value_counts()
-df_w3c["RDF Knowledge Graph"].value_counts()
 
-# %%
-df_w3c["Artefact"].value_counts(normalize=True)
 
-# %%
-df["W3C"].value_counts(normalize=True)
+
+
+
+# # %% Plot the W3C vs non W3C plot
+# v = df["W3C"].value_counts()
+#
+# v = v.rename(
+#     {0: "Non W3C", 1: "W3C"}
+# )
+#
+# fig, ax = plt.subplots(
+#     figsize=(width_inches, width_inches * (2/3)),
+#     dpi=300,
+# )
+#
+# v.plot.pie(
+#     autopct=lambda pct: f'{int(round(pct * v.sum() / 100))}',
+#     # autopct="%1.0f%%",
+#     startangle=90,
+#     ax=ax)
+# ax.set_ylabel("")
+# plt.tight_layout()
+# plt.savefig("./../artifacts/Figure_W3C_Status.pdf", dpi=300, transparent=True)
+#
+# # %% Produce the artefact plot
+# v = df_w3c["Artefact"].value_counts()
+#
+# v = v.rename(
+#     {0: "Artefact Unavailable", 1: "Artefact Available"}
+# )
+#
+# fig, ax = plt.subplots(
+#     figsize=(width_inches, width_inches * (2/3)),
+#     dpi=300,
+# )
+#
+# v.plot.pie(
+#     autopct=lambda pct: f'{int(round(pct * v.sum() / 100))}',
+#     startangle=90,
+#     ax=ax
+# )
+# ax.set_ylabel("")
+# plt.tight_layout()
+# plt.savefig("./../artifacts/Figure_Artefact_Status.pdf", dpi=300, transparent=True)
+#
+# # %%
+# fig, ax = plt.subplots(
+#     figsize=(width_inches, width_inches),
+#     dpi=300,
+# )
+#
+# cols = ["OWL Ontology", "RDF Knowledge Graph"]
+# # "Ontology", "Knowledge Graph", "Taxonomy"
+#
+# plot_df = (
+#     pd.concat(
+#         {
+#             col: df_w3c[col].value_counts()
+#             for col in cols
+#         },
+#         axis=1
+#     )
+#     .T
+# )
+#
+# plot_df.plot(
+#     kind="bar",
+#     ax=ax,
+# )
+#
+# ax.set_ylabel("Number of Studies")
+# ax.set_xlabel("")
+# plt.legend(title="Response")
+# plt.tight_layout()
+# plt.show()
+#
+# # %%
+#
+# width_mm = 89
+# height_mm = 89
+# width_inches = width_mm / 25.4
+# height_inches = height_mm / 25.4
+#
+# fig, ax = plt.subplots(
+#     figsize=(width_inches, width_inches),
+#     dpi=300,
+# )
+#
+# # cols = ["OWL Ontology", "RDF Knowledge Graph", "Linked Data"]
+# cols = ["Ontology", "Knowledge Graph"]
+#
+# plot_df = (
+#     pd.concat(
+#         {
+#             col: df_not_w3c[col].value_counts()
+#             for col in cols
+#         },
+#         axis=1
+#     )
+#     .T
+# )
+#
+# plot_df.plot(
+#     kind="bar",
+#     ax=ax,
+# )
+#
+# ax.set_ylabel("Number of Studies")
+# ax.set_xlabel("")
+# plt.legend(title="Response")
+# plt.tight_layout()
+# plt.show()
+#
+#
+# # %%
+# df_w3c["OWL Ontology"].value_counts()
+# df_w3c["RDF Knowledge Graph"].value_counts()
+#
+# # %%
+# df_w3c["Artefact"].value_counts(normalize=True)
+#
+# # %%
+# df["W3C"].value_counts(normalize=True)

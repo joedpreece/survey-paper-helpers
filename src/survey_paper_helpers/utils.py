@@ -446,6 +446,9 @@ def create_latex_citation_command(df: pd.DataFrame) -> str:
 
 
 def load_studies_against_definitions_df() -> pd.DataFrame:
+    """
+    Load a table of the studies that have been crosschecked against the definitions.
+    """
 
     with (
         resources.files("survey_paper_helpers.data")
