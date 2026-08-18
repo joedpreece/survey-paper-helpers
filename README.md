@@ -1,4 +1,4 @@
-# Survey Paper
+# Survey Paper Helpers
 This repository provides the Python code for the methodology of the survey paper.
 
 ## Installation
@@ -53,14 +53,19 @@ We extracted the [results](src/survey_paper_helpers/data/scopus_export_Mar%2026-
    6. Select `Export` and save the file.
 
 ## Scripts
-The scripts use the source code to produce artifacts, and are located in the [`scripts/`](scripts) folder. You can run these separately. Feel free to add and tinker.
+The scripts use the source code to produce artefacts, and are located in the [`scripts/`](scripts) folder. You can run these separately. Feel free to add and tinker.
 
-- [`extract_keywords.py`](scripts/extract_keywords.py) - Extracts all the Scopus index keywords from the studies.
-- [`extract_relevant_papers.py`](scripts/extract_relevant_papers.py) - Extracts relevant papers based on the keywords.
-- [`produce_venn3.py`](scripts/produce_venn3.py) - Produces the Venn diagram.
-- [`produce_wordcloud.py`](scripts/produce_wordcloud.py) - Produces the word cloud.
+- [check_no_indexed_keywords.py](scripts/check_no_indexed_keywords.py) - Checks how many studies have no indexed keywords.
+- [extract_keywords.py](scripts/extract_keywords.py) - Extracts all the Scopus index keywords from the studies.
+- [extract_relevant_papers.py](scripts/extract_relevant_papers.py) - Extracts relevant papers based on the keywords.
+- [produce_pie_chart.py](scripts/produce_pie_chart.py) - Produces the pie chart in the discussion.
+- [produce_summary_table.py](scripts/produce_summary_table.py) - Produces the summary table for the discussion.
+- [produce_venn3.py](scripts/produce_venn3.py) - Produces the Venn diagram.
+- [produce_wordcloud.py](scripts/produce_wordcloud.py) - Produces the word cloud.
+- [produce_years_vs_number_of_papers.py](scripts/produce_years_vs_number_of_papers.py) - Produces the years vs number of papers plot.
 
-## Artifacts
+## Artefacts
 
-- [`CategorisedPapers.csv`](artifacts/CategorisedPapers.csv) - A table of all 222 studies, with boolean columns stating if they have been categorised as one of the pillars.
-- [`Keywords.csv`](artifacts/Keywords.csv) - A table of all keywords, and the frequency they appear at.
+- [CategorisedPapers.csv](artefacts/CategorisedPapers.csv) - A table of all 222 studies, with boolean columns stating if they have been categorised as one of the pillars.
+- [Keywords.csv](artefacts/Keywords.csv) - A table of all keywords, and the frequency they appear at.
+- [SummaryTable.csv](artefacts/SummaryTable.csv) - Summarises the results against each region.

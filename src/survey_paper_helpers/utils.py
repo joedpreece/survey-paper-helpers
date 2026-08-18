@@ -366,6 +366,37 @@ def load_data() -> pd.DataFrame:
     return df
 
 
+def load_categorised_data() -> pd.DataFrame:
+
+    df = load_data()
+
+    set_eids_decarbonisation = get_eids_with_keywords(DECARBONISATION_TERMS)
+    set_eids_transportation = get_eids_with_keywords(TRANSPORTATION_TERMS)
+    set_eids_combined_semantic = get_eids_with_keywords(COMBINED_SEMANTIC_TERMS)
+
+    set_ontology = get_eids_with_keywords(ONTOLOGY_TERMS)
+    set_semantic_web = get_eids_with_keywords(SEMANTIC_WEB_TERMS)
+    set_knowledge_graph = get_eids_with_keywords(KNOWLEDGE_GRAPH_TERMS)
+    set_linked_data = get_eids_with_keywords(LINKED_DATA_TERMS)
+
+    # Create a new column to say if the category is relevant for each paper.
+    df["transportation"] = df.index.isin(set_eids_transportation)
+    df["decarbonisation"] = df.index.isin(set_eids_decarbonisation)
+    df["semantic_web"] = df.index.isin(set_eids_combined_semantic)
+
+    # Calculate the sum of the relevance scores for each paper.
+    df["relevance"] = df["transportation"].astype(int) + df["decarbonisation"].astype(
+        int) + df["semantic_web"].astype(int)
+
+    # Create a new column to say if the category is relevant for each paper.
+    df["semantic:ontology"] = df.index.isin(set_ontology)
+    df["semantic:semantic_web"] = df.index.isin(set_semantic_web)
+    df["semantic:knowledge_graph"] = df.index.isin(set_knowledge_graph)
+    df["semantic:linked_data"] = df.index.isin(set_linked_data)
+
+    return df
+
+
 def load_keywords() -> pd.DataFrame:
 
     df = load_data()

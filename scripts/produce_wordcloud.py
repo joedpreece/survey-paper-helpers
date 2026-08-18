@@ -49,4 +49,4 @@ plt.axis("off")
 ax.set_position([0, 0, 1, 1])
 
 # plt.show()
-plt.savefig("./../artifacts/Figure_Wordcloud.pdf")
+plt.savefig("./../artefacts/Figure_Wordcloud.pdf")

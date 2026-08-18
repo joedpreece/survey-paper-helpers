@@ -43,7 +43,7 @@ df["semantic:knowledge_graph"] = df.index.isin(set_knowledge_graph)
 df["semantic:linked_data"] = df.index.isin(set_linked_data)
 
 # Save the results to a CSV file.
-df.to_csv("./../artifacts/CategorisedPapers.csv")
+df.to_csv("./../artefacts/CategorisedPapers.csv")
 
 df = df.sort_values(by="Year", ascending=True)
 

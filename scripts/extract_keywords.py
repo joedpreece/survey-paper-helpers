@@ -11,4 +11,4 @@ df = load_scopus_indexed_keywords()
 s = df["Index Keywords"].value_counts()
 
 # Save the value counts to a CSV file.
-s.to_csv("./../artifacts/Keywords.csv")
+s.to_csv("./../artefacts/Keywords.csv")

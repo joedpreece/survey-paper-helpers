@@ -89,5 +89,5 @@ if v.get_label_by_id('111'):
 plt.text(0.1, -0.6, r"$\it{N}$" + f"\n{len(outside)}", fontsize=5)
 
 plt.tight_layout()
-plt.savefig("./../artifacts/Figure_Venn3.pdf", dpi=300, transparent=True)
+plt.savefig("./../artefacts/Figure_Venn3.pdf", dpi=300, transparent=True)
 # plt.show()

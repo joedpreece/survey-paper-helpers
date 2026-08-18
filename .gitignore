@@ -22,7 +22,7 @@ dist/
 # pytest
 .pytest_cache/
 
-# Generated artifacts
+# Generated artefacts
 #*.png
 #*.txt
 

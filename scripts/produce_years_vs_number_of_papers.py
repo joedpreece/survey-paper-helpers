@@ -33,4 +33,4 @@ ax.set_ylabel("Number of Studies")
 fig.tight_layout()
 
 # plt.show()
-plt.savefig("./../artifacts/Figure_Studies_per_year.pdf")
+plt.savefig("./../artefacts/Figure_Studies_per_year.pdf")
