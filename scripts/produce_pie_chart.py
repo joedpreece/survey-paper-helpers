@@ -1,7 +1,7 @@
 """
 This script produces the pie chart summarising the W3C status of the studies.
 """
-
+import numpy as np
 #%%
 from matplotlib import pyplot as plt
 
@@ -69,26 +69,49 @@ ax.pie(
 )
 
 # Inner ring
-ax.pie(
+wedges, _ = ax.pie(
     [
         non_w3c_count,          # hidden
         artefact_available,
         artefact_unavailable,
     ],
     radius=0.7,
-    labels=[
-        "",
-        f"Artefact\n(n={artefact_available})",
-        f"No Artefact\n(n={artefact_unavailable})",
-    ],
+    # labels=[
+    #     "",
+    #     f"Artefact\n(n={artefact_available})",
+    #     f"No Artefact\n(n={artefact_unavailable})",
+    # ],
     colors=[
         "white",      # hidden sector
         "#59a14f",
         "#e15759",
     ],
-    # labeldistance=1,
+    # labeldistance=0.3,
     startangle=90,
     wedgeprops=dict(width=0.3, edgecolor="white"),
+)
+
+labels=[
+        "",
+        f"Artefact\n(n={artefact_available})",
+        f"No Artefact\n(n={artefact_unavailable})",
+    ]
+
+
+ax.text(
+    -0.15, -0.20,
+    f"Artefact\n(n={artefact_available})",
+    ha="center",
+    va="center",
+    fontsize=7,
+)
+
+ax.text(
+    0.075, 0.2,
+    f"No Artefact\n(n={artefact_unavailable})",
+    ha="center",
+    va="center",
+    fontsize=7,
 )
 
 ax.set(aspect="equal")
