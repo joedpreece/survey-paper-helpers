@@ -1,6 +1,8 @@
 # Survey Paper Helpers
 This repository provides the Python code for the methodology of the survey paper.
 
+[![DOI](https://zenodo.org/badge/github/1189506638.svg)](https://doi.org/10.5281/zenodo.24591436)
+
 ## Installation
 1. Clone the repository. 
 2. Set up a local Python `venv`. (For instructions on how to do this, please refer to [this tutorial](https://realpython.com/python-virtual-environments-a-primer/).) 
